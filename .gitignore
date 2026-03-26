@@ -22,8 +22,7 @@ Thumbs.db
 *.csv
 *.xlsx
 
-# Model files (optional - if large)
-*.cbm
+
 
 # Environment variables
 .env

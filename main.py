@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 import pandas as pd
 import numpy as np
 from catboost import CatBoostClassifier
@@ -20,7 +21,7 @@ class CropInput(BaseModel):
     soil_temp: float
     env_temp: float
     moisture: float
-    ph: float
+    ph: Optional[float] = None
     rainfall: float
 
 # =========================================
@@ -38,13 +39,14 @@ def predict(data: CropInput):
 
     temp_diff = data.env_temp - data.soil_temp
     water_index = data.moisture + data.rainfall
+    ph_value = 6.5 if data.ph is None else data.ph
 
     sample = pd.DataFrame({
         'soil_type':[data.soil_type],
         'soil_temp':[data.soil_temp],
         'env_temp':[data.env_temp],
         'moisture':[data.moisture],
-        'ph':[data.ph],
+        'ph':[ph_value],
         'rainfall':[data.rainfall],
         'temp_diff':[temp_diff],
         'water_index':[water_index]
