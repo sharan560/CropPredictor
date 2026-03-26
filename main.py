@@ -22,7 +22,7 @@ class CropInput(BaseModel):
     env_temp: float
     moisture: float
     ph: Optional[float] = None
-    rainfall: float
+    rainfall: Optional[float] = None
 
 # =========================================
 # ROOT API
@@ -37,8 +37,9 @@ def home():
 @app.post("/predict")
 def predict(data: CropInput):
 
+    rainfall_value = 50.0 if data.rainfall is None else data.rainfall
     temp_diff = data.env_temp - data.soil_temp
-    water_index = data.moisture + data.rainfall
+    water_index = data.moisture + rainfall_value
     ph_value = 6.5 if data.ph is None else data.ph
 
     sample = pd.DataFrame({
@@ -47,7 +48,7 @@ def predict(data: CropInput):
         'env_temp':[data.env_temp],
         'moisture':[data.moisture],
         'ph':[ph_value],
-        'rainfall':[data.rainfall],
+        'rainfall':[rainfall_value],
         'temp_diff':[temp_diff],
         'water_index':[water_index]
     })
